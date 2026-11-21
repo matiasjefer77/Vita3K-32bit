@@ -1,0 +1,23 @@
+add_library(
+	app
+	STATIC
+	include/app/functions.h
+	include/app/discord.h
+	src/app_init.cpp
+	src/app.cpp
+	src/discord.cpp
+)
+
+target_include_directories(app PUBLIC include)
+target_link_libraries(app PUBLIC emuenv mem)
+if(USE_DISCORD_RICH_PRESENCE)
+  target_link_libraries(app PUBLIC discord-rpc)
+endif()
+if(ANDROID)
+  if (ARCHITECTURE STREQUAL "arm64")
+	target_link_libraries(app PRIVATE android adrenotools sdl2 host::dialog miniz)
+  else()
+        target_link_libraries(app PRIVATE android sdl2 host::dialog miniz)
+  endif()
+endif()
+target_link_libraries(app PRIVATE audio config display gdbstub gui io motion ngs renderer)

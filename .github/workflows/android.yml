@@ -1,0 +1,136 @@
+name: Android build
+
+# this is greatly inspired by skyline ci build file
+on: [push]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      JVM_OPTS: -Xmx6G
+      VCPKG_ROOT: /usr/local/share/vcpkg
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          submodules: recursive
+ 
+      - uses: hendrikmuhs/ccache-action@v1.2.21
+
+      - name: Restore Gradle Cache
+        uses: actions/cache@v5.0.3
+        with:
+          path: |
+            ~/.gradle/
+            ${{ env.VCPKG_ROOT }}/installed
+            ${{ env.VCPKG_ROOT }}/packages
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('android/**/*.xml') }}-${{ hashFiles('android/**.java') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('android/**/*.xml') }}-
+            ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-
+            ${{ runner.os }}-gradle-
+
+      - name: Set up build environment
+        run: |
+          sudo apt-get install -y ninja-build
+          echo vcpkg update
+          echo vcpkg upgrade --no-dry-run
+          vcpkg install boost-system:arm-neon-android boost-filesystem:arm-neon-android boost-program-options:arm-neon-android boost-icl:arm-neon-android boost-variant:arm-neon-android openssl:arm-neon-android zlib:arm-neon-android ffmpeg:arm-neon-android boost-system:arm64-android boost-filesystem:arm64-android boost-program-options:arm64-android boost-icl:arm64-android boost-variant:arm64-android openssl:arm64-android zlib:arm64-android
+
+      - name: Compute git short sha
+        shell: bash
+        run: echo "git_short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        
+      - name: Decode Keystore Release build
+        env:
+          KEYSTORE_ENCODED: ${{ secrets.KEYSTORE }}
+        run: echo $KEYSTORE_ENCODED | base64 --decode > "/home/runner/keystore.jks"
+
+#      - name: Setup Android NDK
+#        uses: nttld/setup-ndk@v1.5.0
+#        id: setup-ndk
+#        with:
+#             ndk-version: 28.0.12674087-rc1
+#             link-to-sdk: true
+
+      - name: Gradle build 64bit release
+        env:
+          SIGNING_STORE_PATH: "/home/runner/keystore.jks"
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          bash -c "yes || Yes || true" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null
+          mkdir android/assets/data
+          cp -r data/image android/assets/data/image
+          cp -r lang android/assets
+          cp -r vita3k/shaders-builtin android/assets
+          export JAVA_HOME=$(echo $JAVA_HOME_17_X64)
+          ./gradlew --stacktrace --info --configuration-cache --build-cache --parallel --configure-on-demand assembleRelease
+
+#      - name: Decode Keystore Debug build
+#        env:
+#          KEYSTORE_ENCODED: ${{ secrets.KEYSTORE_DEBUG }}
+#        run: |
+#          rm "/home/runner/keystore.jks"
+#          echo $KEYSTORE_ENCODED | base64 --decode > "/home/runner/keystore.jks"
+
+#      - name: Gradle build 64bit reldebug
+#        env:
+#          SIGNING_STORE_PATH: "/home/runner/keystore.jks"
+#          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD_DEBUG }}
+#          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS_DEBUG }}
+#          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD_DEBUG }}
+#        run: |
+#          mkdir android/src/main/jniLibs
+#          mkdir android/build/intermediates/merged_native_libs/reldebug
+#          mkdir android/build/intermediates/merged_native_libs/reldebug/mergeReldebugNativeLibs
+#          mkdir android/build/intermediates/merged_native_libs/reldebug/mergeReldebugNativeLibs/out
+#          mkdir android/build/intermediates/merged_native_libs/reldebug/mergeReldebugNativeLibs/out/lib
+#          export JAVA_HOME=$(echo $JAVA_HOME_17_X64)
+#          cp -r android/prebuilt/ android/src/main/jniLibs
+#          cp -r android/prebuilt/ android/build/intermediates/merged_native_libs/reldebug/mergeReldebugNativeLibs/out/lib/
+#          ./gradlew --configuration-cache --build-cache --parallel --configure-on-demand assembleReldebug
+
+      - name: Rename APK
+        run: |
+          mv  android/build/outputs/apk/release/android-release.apk  android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-release.apk
+#          mv  android/build/outputs/apk/reldebug/android-reldebug.apk  android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-reldebug.apk
+          
+      - uses: actions/upload-artifact@v7.0.0
+        with:
+          name: vita3k-${{ env.git_short_sha }}-release_arm64.zip
+          path: android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-release.apk
+
+#      - uses: actions/upload-artifact@v7.0.0
+#        with:
+#          name: vita3k-${{ env.git_short_sha }}-reldebug_arm64.zip
+#          path: android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-reldebug.apk
+
+# this version is experiemental, so not recommended and will dissabled when release
+      - name: Gradle build 32bit
+        env:
+          SIGNING_STORE_PATH: "/home/runner/keystore.jks"
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          rm -rf android/build
+          rm android/build.gradle
+          rm -rf android/prebuilt
+          mv android/32bit.gradle android/build.gradle
+          export JAVA_HOME=$(echo $JAVA_HOME_17_X64)
+          ./gradlew --stacktrace --info --configuration-cache --build-cache --parallel --configure-on-demand assembleRelease
+
+      - name: Rename APK
+        run: |
+          mv  android/build/outputs/apk/release/android-release.apk  android/build/outputs/apk/release/vita3k-armv7a-${{ env.git_short_sha }}-release.apk
+          
+      - uses: actions/upload-artifact@v5
+        with:
+          name: vita3k-${{ env.git_short_sha }}-release_armv7a.zip
+          path: android/build/outputs/apk/release/vita3k-armv7a-${{ env.git_short_sha }}-release.apk

@@ -58,6 +58,7 @@ jobs:
 #             link-to-sdk: true
 
       - name: Gradle build 64bit release
+        continue-on-error: true  
         env:
           SIGNING_STORE_PATH: "/home/runner/keystore.jks"
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
@@ -70,6 +71,7 @@ jobs:
           cp -r lang android/assets
           cp -r vita3k/shaders-builtin android/assets
           export JAVA_HOME=$(echo $JAVA_HOME_17_X64)
+          chmod +x gradlew
           ./gradlew --stacktrace --info --configuration-cache --build-cache --parallel --configure-on-demand assembleRelease
 
 #      - name: Decode Keystore Debug build

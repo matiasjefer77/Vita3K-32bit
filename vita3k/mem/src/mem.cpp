@@ -95,7 +95,7 @@ bool init(MemState &state, const bool use_page_table) {
 #else
     // http://man7.org/linux/man-pages/man2/mmap.2.html
     const int prot = PROT_NONE;
-    const int flags = MAP_PRIVATE | MAP_ANONYMOUS;
+    const int flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
     const int fd = 0;
     const off_t offset = 0;
     // preferred_address is only a hint for mmap, if it can't use it, the kernel will choose itself the address 

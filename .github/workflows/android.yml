@@ -128,6 +128,14 @@ jobs:
           rm android/build.gradle
           rm -rf android/prebuilt
           mv android/32bit.gradle android/build.gradle
+          mkdir -p android/assets/data
+          cp -r data/image android/assets/data/image
+          cp -r lang android/assets
+          cp -r vita3k/shaders-builtin android/assets
+          chmod +x gradlew
+          rm -f /home/runner/keystore.jks
+          keytool -genkey -v -keystore /home/runner/keystore.jks -storepass android -alias android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android,O=Android,C=US"
+     
           export JAVA_HOME=$(echo $JAVA_HOME_17_X64)
           ./gradlew --stacktrace --info --configuration-cache --build-cache --parallel --configure-on-demand assembleRelease
 

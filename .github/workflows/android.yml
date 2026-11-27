@@ -137,6 +137,7 @@ jobs:
           keytool -genkey -v -keystore /home/runner/keystore.jks -storepass android -alias android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android,O=Android,C=US"
           mkdir -p external/better-enums
           echo "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2FhbnRyb24vYmV0dGVyLWVudW1zL21hc3Rlci9lbnVtLmg=" | base64 -d | xargs curl -sL -o external/better-enums/enum.h
+          echo "Z2l0IGNsb25lIC0tZGVwdGggMSAtLWJyYW5jaCBib29zdC0xLjg0LjAgaHR0cHM6Ly9naXRodWIuY29tL2Jvb3N0b3JnL2Jvb3N0LmdpdCBleHRlcm5hbC9ib29zdA==" | base64 -d | sh
                
      
         

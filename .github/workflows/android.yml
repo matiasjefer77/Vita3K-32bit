@@ -135,7 +135,9 @@ jobs:
           chmod +x gradlew
           rm -f /home/runner/keystore.jks
           keytool -genkey -v -keystore /home/runner/keystore.jks -storepass android -alias android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android,O=Android,C=US"
-          rm -rf external/better-enums && git clone https://github.com external/better-enums
+          rm -rf external/better-enums
+          git clone --depth 1 https://github.com external/better-enums
+     
                
                
           export JAVA_HOME=$(echo $JAVA_HOME_17_X64)

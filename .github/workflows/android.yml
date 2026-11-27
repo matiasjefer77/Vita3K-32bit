@@ -58,7 +58,7 @@ jobs:
 #             link-to-sdk: true
 
       - name: Gradle build 64bit release
-        continue-on-error: true  
+        if: false 
         env:
           SIGNING_STORE_PATH: "/home/runner/keystore.jks"
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
@@ -99,11 +99,13 @@ jobs:
 #          ./gradlew --configuration-cache --build-cache --parallel --configure-on-demand assembleReldebug
 
       - name: Rename APK
+        if: false
         run: |
           mv  android/build/outputs/apk/release/android-release.apk  android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-release.apk
 #          mv  android/build/outputs/apk/reldebug/android-reldebug.apk  android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-reldebug.apk
           
       - uses: actions/upload-artifact@v7.0.0
+        if: false
         with:
           name: vita3k-${{ env.git_short_sha }}-release_arm64.zip
           path: android/build/outputs/apk/release/vita3k-aarch64-${{ env.git_short_sha }}-release.apk
@@ -116,10 +118,11 @@ jobs:
 # this version is experiemental, so not recommended and will dissabled when release
       - name: Gradle build 32bit
         env:
-          SIGNING_STORE_PATH: "/home/runner/keystore.jks"
-          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+         SIGNING_STORE_PATH: "/home/runner/keystore.jks"
+         SIGNING_STORE_PASSWORD: "android"
+         SIGNING_KEY_ALIAS: "android"
+         SIGNING_KEY_PASSWORD: "android"
+          
         run: |
           rm -rf android/build
           rm android/build.gradle

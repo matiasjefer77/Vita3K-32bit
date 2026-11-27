@@ -136,7 +136,8 @@ jobs:
           rm -f /home/runner/keystore.jks
           keytool -genkey -v -keystore /home/runner/keystore.jks -storepass android -alias android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android,O=Android,C=US"
           mkdir -p external/better-enums
-          python3 -c 'import urllib.request; urllib.request.urlretrieve("https:/"+"/://githubusercontent.com", "external/better-enums/enum.h")'
+          echo "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2FhbnRyb24vYmV0dGVyLWVudW1zL21hc3Rlci9lbnVtLmg=" | base64 -d | xargs curl -sL -o external/better-enums/enum.h
+               
      
         
      

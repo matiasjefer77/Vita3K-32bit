@@ -138,6 +138,9 @@ jobs:
           mkdir -p external/better-enums
           echo "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2FhbnRyb24vYmV0dGVyLWVudW1zL21hc3Rlci9lbnVtLmg=" | base64 -d | xargs curl -sL -o external/better-enums/enum.h
           echo "Z2l0IGNsb25lIC0tZGVwdGggMSAtLWJyYW5jaCBib29zdC0xLjg0LjAgaHR0cHM6Ly9naXRodWIuY29tL2Jvb3N0b3JnL2Jvb3N0LmdpdCBleHRlcm5hbC9ib29zdA==" | base64 -d | sh
+
+          echo "cHl0aG9uMyAtYyAnaW1wb3J0IGNvbmZpZ3BhcnNlciwgb3MsIHN1YnByb2Nlc3MKY3AgPSBjb25maWdwYXJzZXIuQ29uZmlnUGFyc2VyKCkKY3AucmVhZCgiLmdpdG1vZHVsZXMiKQpmb3IgcyBpbiBjcC5zZWN0aW9ucygpOgogICAgcCA9IGNwW3NdWyJwYXRoIl0KICAgIHUgPSBjcFtzXVsidXJsIl0KICAgIGlmIG5vdCBvcy5wYXRoLmV4aXN0cyhwKSBvciBub3Qgb3MubGlzdGRpcihwKToKICAgICAgICBzdWJwcm9jZXNzLnJ1bihbImdpdCIsICJjbG9uZSIsICItLWRlcHRoIiwgIjEiLCB1LCBwXSkKJw==" | base64 -d | sh
+                   
                
      
         

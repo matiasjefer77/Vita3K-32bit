@@ -140,7 +140,8 @@ jobs:
           echo "Z2l0IGNsb25lIC0tZGVwdGggMSAtLWJyYW5jaCBib29zdC0xLjg0LjAgaHR0cHM6Ly9naXRodWIuY29tL2Jvb3N0b3JnL2Jvb3N0LmdpdCBleHRlcm5hbC9ib29zdA==" | base64 -d | sh
 
           echo "cHl0aG9uMyAtYyAnaW1wb3J0IGNvbmZpZ3BhcnNlciwgb3MsIHN1YnByb2Nlc3MsIHNodXRpbApjcCA9IGNvbmZpZ3BhcnNlci5Db25maWdQYXJzZXIoKQpjcC5yZWFkKCIuZ2l0bW9kdWxlcyIpCmZvciBzIGluIGNwLnNlY3Rpb25zKCk6CiAgICBwID0gY3Bbc11bInBhdGgiXS5zdHJpcCgpCiAgICB1ID0gY3Bbc11bInVybCJdLnNwbGl0KClbMF0ucmVwbGFjZSgiaWtob2V5WlgvVnVsa2FuTWVtb3J5QWxsb2NhdG9yLUhwcCIsICJWaXRhM0svVnVsa2FuTWVtb3J5QWxsb2NhdG9yLUhwcCIpCiAgICBpZiBvcy5wYXRoLmV4aXN0cyhwKSBhbmQgbm90IG9zLmxpc3RkaXIocCk6IHNodXRpbC5ybXRyZWUocCkKICAgIGlmIG5vdCBvcy5wYXRoLmV4aXN0cyhwKTogc3VicHJvY2Vzcy5ydW4oWyJnaXQiLCAiY2xvbmUiLCAiLS1kZXB0aCIsICIxIiwgdSwgcF0pCic=" | base64 -d | sh
-          echo "cm0gLXJmIGV4dGVybmFsL1Z1bGthbk1lbW9yeUFsbG9jYXRvci1IcHAgJiYgZ2l0IGNsb25lIC0tZGVwdGggMSBodHRwczovL2dpdGh1Yi5jb20vVml0YTNLL1Z1bGthbk1lbW9yeUFsbG9jYXRvci1IcHAuZ2l0IGV4dGVybmFsL1Z1bGthbk1lbW9yeUFsbG9jYXRvci1IcHA=" | base64 -d | sh
+          echo "cm0gLXJmIGV4dGVybmFsL1Z1bGthbk1lbW9yeUFsbG9jYXRvci1IcHAgJiYgZ2l0IGNsb25lIC0tZGVwdGggMSBodHRwczovL2dpdGh1Yi5jb20vS2hyb25vc0dyb3VwL1Z1bGthbk1lbW9yeUFsbG9jYXRvci1IcHAuZ2l0IGV4dGVybmFsL1Z1bGthbk1lbW9yeUFsbG9jYXRvci1IcHA=" | base64 -d | sh
+               
                  
                
                   
